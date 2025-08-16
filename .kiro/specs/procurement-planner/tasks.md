@@ -8,7 +8,7 @@
   - Configure logging, CORS, and basic middleware pipeline
   - _Requirements: 6.1, 6.4_
 
-- [-] 2. Implement authentication and authorization system
+- [x] 2. Implement authentication and authorization system
 
   - Create User entity and authentication models
   - Implement JWT token generation and validation
@@ -17,8 +17,8 @@
   - Write unit tests for authentication service
   - _Requirements: 6.1, 6.2, 6.4_
 
-- [ ] 3. Create core domain models and database schema
-- [ ] 3.1 Implement User and Role models with Entity Framework
+- [-] 3. Create core domain models and database schema
+- [-] 3.1 Implement User and Role models with Entity Framework
 
   - Create User, UserRole entities with proper relationships
   - Configure Entity Framework mappings and constraints

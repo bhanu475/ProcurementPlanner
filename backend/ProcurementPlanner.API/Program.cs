@@ -25,6 +25,10 @@ builder.Services.AddFluentValidationAutoValidation();
 // Add Infrastructure services
 builder.Services.AddInfrastructure(builder.Configuration);
 
+// Configure JWT Settings
+builder.Services.Configure<ProcurementPlanner.Core.Models.JwtSettings>(
+    builder.Configuration.GetSection("Jwt"));
+
 // Add AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -53,7 +57,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not configured")))
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey not configured"))),
+            ClockSkew = TimeSpan.Zero
         };
     });
 
@@ -83,6 +88,9 @@ app.UseHttpsRedirection();
 
 // Use CORS
 app.UseCors("AllowSpecificOrigins");
+
+// Use JWT Middleware
+app.UseMiddleware<ProcurementPlanner.API.Middleware.JwtMiddleware>();
 
 // Use Authentication and Authorization
 app.UseAuthentication();

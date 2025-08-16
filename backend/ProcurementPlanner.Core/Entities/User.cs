@@ -30,6 +30,9 @@ public class User : BaseEntity
     public string? LastName { get; set; }
 
     public string FullName => $"{FirstName} {LastName}".Trim();
+
+    // Navigation properties
+    public List<RefreshToken>? RefreshTokens { get; set; }
 }
 
 public enum UserRole

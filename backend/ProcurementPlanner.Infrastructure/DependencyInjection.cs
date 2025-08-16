@@ -14,7 +14,7 @@ public static class DependencyInjection
         // Add Entity Framework
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            options.UseSqlite(configuration.GetConnectionString("DefaultConnection"));
             
             // Enable sensitive data logging in development
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
@@ -26,6 +26,9 @@ public static class DependencyInjection
 
         // Add repositories
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+        // Add authentication service
+        services.AddScoped<IAuthenticationService, Services.AuthenticationService>();
 
         // Add health checks (database check will be added in future tasks)
         services.AddHealthChecks();
