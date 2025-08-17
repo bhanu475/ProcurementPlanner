@@ -18,7 +18,7 @@
   - _Requirements: 6.1, 6.2, 6.4_
 
 - [-] 3. Create core domain models and database schema
-- [ ] 3.1 Implement User and Role models with Entity Framework
+- [x] 3.1 Implement User and Role models with Entity Framework
 
   - Create User, UserRole entities with proper relationships
   - Configure Entity Framework mappings and constraints
@@ -26,7 +26,7 @@
   - Write unit tests for user model validation
   - _Requirements: 6.1, 6.4_
 
-- [ ] 3.2 Implement Order domain models
+- [x] 3.2 Implement Order domain models
 
   - Create CustomerOrder, OrderItem entities with validation
   - Implement OrderStatus enum and status transition logic
@@ -35,7 +35,7 @@
   - Write unit tests for order model validation and business rules
   - _Requirements: 1.1, 1.3, 8.1, 8.2_
 
-- [-] 3.3 Implement Supplier and PurchaseOrder models
+- [x] 3.3 Implement Supplier and PurchaseOrder models
 
   - Create Supplier, SupplierCapability, PurchaseOrder, PurchaseOrderItem entities
   - Implement supplier performance tracking models

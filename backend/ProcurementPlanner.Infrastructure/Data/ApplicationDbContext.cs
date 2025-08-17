@@ -15,6 +15,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<Supplier> Suppliers { get; set; }
     public DbSet<SupplierCapability> SupplierCapabilities { get; set; }
+    public DbSet<SupplierPerformanceMetrics> SupplierPerformanceMetrics { get; set; }
     public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
     public DbSet<PurchaseOrderItem> PurchaseOrderItems { get; set; }
 
@@ -65,6 +66,84 @@ public class ApplicationDbContext : DbContext
             entity.HasIndex(e => e.OrderId);
             entity.HasIndex(e => e.ProductCode);
             entity.Property(e => e.UnitPrice).HasPrecision(18, 2);
+        });
+
+        // Configure Supplier entity
+        modelBuilder.Entity<Supplier>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Name);
+            entity.HasIndex(e => e.ContactEmail);
+            entity.HasIndex(e => e.IsActive);
+            entity.HasMany(e => e.Capabilities)
+                  .WithOne(c => c.Supplier)
+                  .HasForeignKey(c => c.SupplierId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasMany(e => e.PurchaseOrders)
+                  .WithOne(p => p.Supplier)
+                  .HasForeignKey(p => p.SupplierId)
+                  .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Performance)
+                  .WithOne(p => p.Supplier)
+                  .HasForeignKey<SupplierPerformanceMetrics>(p => p.SupplierId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Configure SupplierCapability entity
+        modelBuilder.Entity<SupplierCapability>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => new { e.SupplierId, e.ProductType }).IsUnique();
+            entity.HasIndex(e => e.IsActive);
+            entity.Property(e => e.ProductType).HasConversion<string>();
+            entity.Property(e => e.QualityRating).HasPrecision(3, 2);
+        });
+
+        // Configure SupplierPerformanceMetrics entity
+        modelBuilder.Entity<SupplierPerformanceMetrics>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.SupplierId).IsUnique();
+            entity.Property(e => e.OnTimeDeliveryRate).HasPrecision(5, 4);
+            entity.Property(e => e.QualityScore).HasPrecision(3, 2);
+            entity.Property(e => e.AverageDeliveryDays).HasPrecision(5, 2);
+            entity.Property(e => e.CustomerSatisfactionRate).HasPrecision(5, 4);
+        });
+
+        // Configure PurchaseOrder entity
+        modelBuilder.Entity<PurchaseOrder>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.PurchaseOrderNumber).IsUnique();
+            entity.HasIndex(e => e.SupplierId);
+            entity.HasIndex(e => e.CustomerOrderId);
+            entity.HasIndex(e => e.Status);
+            entity.HasIndex(e => e.RequiredDeliveryDate);
+            entity.HasIndex(e => e.CreatedBy);
+            entity.Property(e => e.Status).HasConversion<string>();
+            entity.Property(e => e.TotalValue).HasPrecision(18, 2);
+            entity.HasOne(e => e.CustomerOrder)
+                  .WithMany()
+                  .HasForeignKey(e => e.CustomerOrderId)
+                  .OnDelete(DeleteBehavior.Restrict);
+            entity.HasMany(e => e.Items)
+                  .WithOne(i => i.PurchaseOrder)
+                  .HasForeignKey(i => i.PurchaseOrderId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Configure PurchaseOrderItem entity
+        modelBuilder.Entity<PurchaseOrderItem>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.PurchaseOrderId);
+            entity.HasIndex(e => e.OrderItemId);
+            entity.HasIndex(e => e.ProductCode);
+            entity.Property(e => e.UnitPrice).HasPrecision(18, 2);
+            entity.HasOne(e => e.OrderItem)
+                  .WithMany()
+                  .HasForeignKey(e => e.OrderItemId)
+                  .OnDelete(DeleteBehavior.Restrict);
         });
     }
 

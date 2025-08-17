@@ -5,40 +5,26 @@ namespace ProcurementPlanner.Core.Entities;
 public class Supplier : BaseEntity
 {
     [Required]
-    [MaxLength(100)]
+    [MaxLength(200)]
     public string Name { get; set; } = string.Empty;
-
-    [Required]
-    [MaxLength(50)]
-    public string Code { get; set; } = string.Empty;
 
     [Required]
     [EmailAddress]
     [MaxLength(255)]
     public string ContactEmail { get; set; } = string.Empty;
 
+    [Required]
     [MaxLength(20)]
-    public string? ContactPhone { get; set; }
-
-    [MaxLength(500)]
-    public string? Address { get; set; }
+    public string ContactPhone { get; set; } = string.Empty;
 
     [Required]
-    public SupplierStatus Status { get; set; } = SupplierStatus.Active;
+    [MaxLength(500)]
+    public string Address { get; set; } = string.Empty;
 
-    [Range(0, 100, ErrorMessage = "Performance score must be between 0 and 100")]
-    public decimal PerformanceScore { get; set; } = 0;
+    public bool IsActive { get; set; } = true;
 
-    [Range(0, int.MaxValue, ErrorMessage = "Lead time must be non-negative")]
-    public int LeadTimeDays { get; set; } = 0;
-
-    [Range(0, double.MaxValue, ErrorMessage = "Capacity must be non-negative")]
-    public int MonthlyCapacity { get; set; } = 0;
-
-    [Range(0, double.MaxValue, ErrorMessage = "Current utilization must be non-negative")]
-    public int CurrentUtilization { get; set; } = 0;
-
-    public DateTime? LastPerformanceUpdate { get; set; }
+    [MaxLength(100)]
+    public string? ContactPersonName { get; set; }
 
     [MaxLength(1000)]
     public string? Notes { get; set; }
@@ -46,62 +32,52 @@ public class Supplier : BaseEntity
     // Navigation properties
     public List<SupplierCapability> Capabilities { get; set; } = new();
     public List<PurchaseOrder> PurchaseOrders { get; set; } = new();
-
-    // Calculated properties
-    public decimal UtilizationPercentage => MonthlyCapacity > 0 ? 
-        Math.Min(100, (decimal)CurrentUtilization / MonthlyCapacity * 100) : 0;
-
-    public int AvailableCapacity => Math.Max(0, MonthlyCapacity - CurrentUtilization);
-
-    public bool IsOverCapacity => CurrentUtilization > MonthlyCapacity;
+    public SupplierPerformanceMetrics? Performance { get; set; }
 
     // Business logic methods
-    public bool CanHandleQuantity(int quantity)
+    public int GetAvailableCapacity(ProductType productType)
     {
-        return AvailableCapacity >= quantity;
+        var capability = Capabilities.FirstOrDefault(c => c.ProductType == productType);
+        return capability?.AvailableCapacity ?? 0;
     }
 
-    public void UpdatePerformanceScore(decimal newScore)
-    {
-        if (newScore < 0 || newScore > 100)
-        {
-            throw new ArgumentException("Performance score must be between 0 and 100", nameof(newScore));
-        }
-        
-        PerformanceScore = newScore;
-        LastPerformanceUpdate = DateTime.UtcNow;
-    }
-
-    public void AllocateCapacity(int quantity)
-    {
-        if (quantity < 0)
-        {
-            throw new ArgumentException("Quantity must be non-negative", nameof(quantity));
-        }
-
-        CurrentUtilization += quantity;
-    }
-
-    public void ReleaseCapacity(int quantity)
-    {
-        if (quantity < 0)
-        {
-            throw new ArgumentException("Quantity must be non-negative", nameof(quantity));
-        }
-
-        CurrentUtilization = Math.Max(0, CurrentUtilization - quantity);
-    }
-
-    public bool HasCapabilityFor(ProductType productType)
+    public bool CanHandleProductType(ProductType productType)
     {
         return Capabilities.Any(c => c.ProductType == productType && c.IsActive);
     }
-}
 
-public enum SupplierStatus
-{
-    Active = 1,
-    Inactive = 2,
-    Suspended = 3,
-    UnderReview = 4
+    public bool HasCapacityFor(ProductType productType, int requiredQuantity)
+    {
+        var availableCapacity = GetAvailableCapacity(productType);
+        return availableCapacity >= requiredQuantity;
+    }
+
+    public void ValidateContactInformation()
+    {
+        if (string.IsNullOrWhiteSpace(Name))
+        {
+            throw new ArgumentException("Supplier name is required", nameof(Name));
+        }
+
+        if (string.IsNullOrWhiteSpace(ContactEmail))
+        {
+            throw new ArgumentException("Contact email is required", nameof(ContactEmail));
+        }
+
+        if (string.IsNullOrWhiteSpace(ContactPhone))
+        {
+            throw new ArgumentException("Contact phone is required", nameof(ContactPhone));
+        }
+
+        if (string.IsNullOrWhiteSpace(Address))
+        {
+            throw new ArgumentException("Address is required", nameof(Address));
+        }
+    }
+
+    public decimal GetQualityRating(ProductType productType)
+    {
+        var capability = Capabilities.FirstOrDefault(c => c.ProductType == productType);
+        return capability?.QualityRating ?? 0;
+    }
 }
