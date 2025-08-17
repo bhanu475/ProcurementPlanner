@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ProcurementPlanner.Core.Interfaces;
 using ProcurementPlanner.Infrastructure.Data;
 using ProcurementPlanner.Infrastructure.Repositories;
+using ProcurementPlanner.Infrastructure.Services;
 
 namespace ProcurementPlanner.Infrastructure;
 
@@ -26,12 +27,18 @@ public static class DependencyInjection
 
         // Add repositories
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        services.AddScoped<ICustomerOrderRepository, CustomerOrderRepository>();
 
-        // Add authentication service
-        services.AddScoped<IAuthenticationService, Services.AuthenticationService>();
+        // Add services
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
+        services.AddScoped<IOrderManagementService, OrderManagementService>();
+        services.AddScoped<IDashboardService, DashboardService>();
 
         // Add health checks (database check will be added in future tasks)
         services.AddHealthChecks();
+
+        // Add in-memory caching for dashboard (Redis will be configured in future tasks)
+        services.AddMemoryCache();
 
         // Add Redis cache (will be configured in future tasks)
         // services.AddStackExchangeRedisCache(options =>
