@@ -90,8 +90,8 @@
   - Write integration tests for supplier API endpoints
   - _Requirements: 3.1, 3.2, 4.1, 4.4_
 
-- [ ] 6. Implement Procurement Planning Service
-- [ ] 6.1 Create distribution algorithm service
+- [x] 6. Implement Procurement Planning Service
+- [x] 6.1 Create distribution algorithm service
 
   - Implement fair distribution algorithm based on supplier capacity
   - Create supplier selection logic considering performance metrics
@@ -100,7 +100,7 @@
   - Write unit tests for distribution algorithms with various scenarios
   - _Requirements: 3.1, 3.2, 3.3, 3.4_
 
-- [ ] 6.2 Implement Purchase Order creation service
+- [x] 6.2 Implement Purchase Order creation service
 
   - Create IProcurementPlanningService interface and implementation
   - Implement purchase order generation from customer orders
@@ -109,7 +109,7 @@
   - Write unit tests for purchase order creation and validation
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-- [ ] 6.3 Create Procurement Planning API Controller
+- [x] 6.3 Create Procurement Planning API Controller
 
   - Implement ProcurementController with distribution endpoints
   - Add purchase order creation and confirmation endpoints

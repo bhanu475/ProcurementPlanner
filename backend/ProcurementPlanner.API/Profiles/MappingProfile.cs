@@ -79,5 +79,46 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.CancellationRate, opt => opt.MapFrom(src => src.CancellationRate))
             .ForMember(dest => dest.IsReliableSupplier, opt => opt.MapFrom(src => src.IsReliableSupplier))
             .ForMember(dest => dest.IsPreferredSupplier, opt => opt.MapFrom(src => src.IsPreferredSupplier));
+
+        // Procurement Planning Mappings
+        CreateMap<DistributionPlanDto, DistributionPlan>()
+            .ForMember(dest => dest.CustomerOrderId, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedBy, opt => opt.Ignore());
+
+        CreateMap<SupplierAllocationDto, SupplierAllocation>()
+            .ForMember(dest => dest.SupplierName, opt => opt.Ignore())
+            .ForMember(dest => dest.AllocationPercentage, opt => opt.Ignore())
+            .ForMember(dest => dest.AvailableCapacity, opt => opt.Ignore())
+            .ForMember(dest => dest.PerformanceScore, opt => opt.Ignore())
+            .ForMember(dest => dest.QualityRating, opt => opt.Ignore())
+            .ForMember(dest => dest.OnTimeDeliveryRate, opt => opt.Ignore());
+
+        CreateMap<SupplierConfirmationRequest, SupplierConfirmation>()
+            .ForMember(dest => dest.ConfirmedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.ConfirmedBy, opt => opt.Ignore());
+
+        CreateMap<PurchaseOrderItemConfirmationDto, PurchaseOrderItemConfirmation>();
+
+        CreateMap<PurchaseOrderItemUpdateRequest, PurchaseOrderItemUpdate>();
+
+        CreateMap<DistributionSuggestion, DistributionSuggestionResponse>()
+            .ForMember(dest => dest.IsFullyAllocated, opt => opt.MapFrom(src => src.IsFullyAllocated))
+            .ForMember(dest => dest.UnallocatedQuantity, opt => opt.MapFrom(src => src.UnallocatedQuantity));
+
+        CreateMap<SupplierAllocation, SupplierAllocationResponse>();
+
+        CreateMap<PurchaseOrder, PurchaseOrderResponse>()
+            .ForMember(dest => dest.CustomerOrderNumber, opt => opt.MapFrom(src => src.CustomerOrder.OrderNumber))
+            .ForMember(dest => dest.SupplierName, opt => opt.MapFrom(src => src.Supplier.Name))
+            .ForMember(dest => dest.TotalQuantity, opt => opt.MapFrom(src => src.TotalQuantity))
+            .ForMember(dest => dest.IsOverdue, opt => opt.MapFrom(src => src.IsOverdue));
+
+        CreateMap<PurchaseOrderItem, PurchaseOrderItemResponse>()
+            .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.TotalPrice));
+
+        CreateMap<DistributionValidationResult, DistributionValidationResponse>();
+
+        CreateMap<SupplierCapacityValidation, SupplierCapacityValidationResponse>();
     }
 }
