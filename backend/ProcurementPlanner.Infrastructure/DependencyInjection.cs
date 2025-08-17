@@ -28,11 +28,13 @@ public static class DependencyInjection
         // Add repositories
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddScoped<ICustomerOrderRepository, CustomerOrderRepository>();
+        services.AddScoped<ISupplierRepository, SupplierRepository>();
 
         // Add services
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<IOrderManagementService, OrderManagementService>();
         services.AddScoped<IDashboardService, DashboardService>();
+        services.AddScoped<ISupplierManagementService, SupplierManagementService>();
 
         // Add health checks (database check will be added in future tasks)
         services.AddHealthChecks();

@@ -7,6 +7,9 @@ public class ApiResponse<T>
     public string? Message { get; set; }
     public List<string>? Errors { get; set; }
     public string? CorrelationId { get; set; }
+    public int? TotalCount { get; set; }
+    public int? Page { get; set; }
+    public int? PageSize { get; set; }
 
     public static ApiResponse<T> SuccessResponse(T data, string? message = null)
     {

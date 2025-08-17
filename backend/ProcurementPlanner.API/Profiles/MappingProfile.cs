@@ -42,5 +42,42 @@ public class MappingProfile : Profile
 
         CreateMap<OrdersByDeliveryDate, OrdersByDeliveryDateDto>();
         CreateMap<OrdersByCustomer, OrdersByCustomerDto>();
+
+        // Supplier Management Mappings
+        CreateMap<CreateSupplierRequest, Supplier>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.PurchaseOrders, opt => opt.Ignore())
+            .ForMember(dest => dest.Performance, opt => opt.Ignore());
+
+        CreateMap<UpdateSupplierRequest, Supplier>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.Capabilities, opt => opt.Ignore())
+            .ForMember(dest => dest.PurchaseOrders, opt => opt.Ignore())
+            .ForMember(dest => dest.Performance, opt => opt.Ignore());
+
+        CreateMap<CreateSupplierCapabilityRequest, SupplierCapability>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.SupplierId, opt => opt.Ignore())
+            .ForMember(dest => dest.Supplier, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true));
+
+        CreateMap<Supplier, SupplierResponse>();
+
+        CreateMap<SupplierCapability, SupplierCapabilityResponse>()
+            .ForMember(dest => dest.AvailableCapacity, opt => opt.MapFrom(src => src.AvailableCapacity))
+            .ForMember(dest => dest.CapacityUtilizationRate, opt => opt.MapFrom(src => src.CapacityUtilizationRate))
+            .ForMember(dest => dest.IsOverCommitted, opt => opt.MapFrom(src => src.IsOverCommitted));
+
+        CreateMap<SupplierPerformanceMetrics, SupplierPerformanceResponse>()
+            .ForMember(dest => dest.OverallPerformanceScore, opt => opt.MapFrom(src => src.OverallPerformanceScore))
+            .ForMember(dest => dest.CancellationRate, opt => opt.MapFrom(src => src.CancellationRate))
+            .ForMember(dest => dest.IsReliableSupplier, opt => opt.MapFrom(src => src.IsReliableSupplier))
+            .ForMember(dest => dest.IsPreferredSupplier, opt => opt.MapFrom(src => src.IsPreferredSupplier));
     }
 }

@@ -71,8 +71,8 @@
   - Write unit tests for dashboard calculations and performance tests
   - _Requirements: 1.1, 1.2, 1.4, 1.5_
 
-- [ ] 5. Build Supplier Management Service and API
-- [ ] 5.1 Implement Supplier Management Service
+- [x] 5. Build Supplier Management Service and API
+- [x] 5.1 Implement Supplier Management Service
 
   - Create ISupplierManagementService interface and implementation
   - Implement supplier capacity tracking and availability calculations
@@ -81,7 +81,7 @@
   - Write unit tests for supplier capacity algorithms
   - _Requirements: 3.1, 3.2, 3.5_
 
-- [ ] 5.2 Create Supplier Management API Controller
+- [x] 5.2 Create Supplier Management API Controller
 
   - Implement SupplierController with supplier CRUD operations
   - Add supplier capacity update endpoints
