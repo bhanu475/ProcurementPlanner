@@ -11,6 +11,12 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public DbSet<CustomerOrder> CustomerOrders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
+    public DbSet<Supplier> Suppliers { get; set; }
+    public DbSet<SupplierCapability> SupplierCapabilities { get; set; }
+    public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
+    public DbSet<PurchaseOrderItem> PurchaseOrderItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -34,6 +40,31 @@ public class ApplicationDbContext : DbContext
                   .WithMany(u => u.RefreshTokens)
                   .HasForeignKey(e => e.UserId)
                   .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Configure CustomerOrder entity
+        modelBuilder.Entity<CustomerOrder>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.OrderNumber).IsUnique();
+            entity.HasIndex(e => e.CustomerId);
+            entity.HasIndex(e => e.Status);
+            entity.HasIndex(e => e.RequestedDeliveryDate);
+            entity.Property(e => e.ProductType).HasConversion<string>();
+            entity.Property(e => e.Status).HasConversion<string>();
+            entity.HasMany(e => e.Items)
+                  .WithOne(i => i.Order)
+                  .HasForeignKey(i => i.OrderId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Configure OrderItem entity
+        modelBuilder.Entity<OrderItem>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.OrderId);
+            entity.HasIndex(e => e.ProductCode);
+            entity.Property(e => e.UnitPrice).HasPrecision(18, 2);
         });
     }
 
