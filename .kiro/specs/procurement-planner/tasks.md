@@ -118,8 +118,8 @@
   - Write integration tests for procurement planning workflows
   - _Requirements: 2.1, 2.2, 2.3, 4.1, 4.2_
 
-- [ ] 7. Build Supplier Portal functionality
-- [ ] 7.1 Implement Supplier Order Confirmation Service
+- [x] 7. Build Supplier Portal functionality
+- [x] 7.1 Implement Supplier Order Confirmation Service
 
   - Create supplier order confirmation logic with accept/reject options
   - Implement packaging and delivery detail capture
@@ -128,7 +128,7 @@
   - Write unit tests for supplier confirmation workflows
   - _Requirements: 4.1, 4.2, 4.3, 5.1, 5.2_
 
-- [ ] 7.2 Create Supplier Portal API endpoints
+- [x] 7.2 Create Supplier Portal API endpoints
 
   - Implement supplier-specific endpoints for order viewing
   - Add order confirmation and rejection endpoints

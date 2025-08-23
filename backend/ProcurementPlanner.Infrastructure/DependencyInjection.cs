@@ -37,6 +37,7 @@ public static class DependencyInjection
         services.AddScoped<ISupplierManagementService, SupplierManagementService>();
         services.AddScoped<IDistributionAlgorithmService, DistributionAlgorithmService>();
         services.AddScoped<IProcurementPlanningService, ProcurementPlanningService>();
+        services.AddScoped<ISupplierOrderConfirmationService, SupplierOrderConfirmationService>();
 
         // Add health checks (database check will be added in future tasks)
         services.AddHealthChecks();

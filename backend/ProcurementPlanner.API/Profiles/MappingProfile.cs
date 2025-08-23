@@ -120,5 +120,35 @@ public class MappingProfile : Profile
         CreateMap<DistributionValidationResult, DistributionValidationResponse>();
 
         CreateMap<SupplierCapacityValidation, SupplierCapacityValidationResponse>();
+
+        // Supplier Portal Mappings
+        CreateMap<SupplierOrderConfirmationDto, SupplierOrderConfirmation>();
+        CreateMap<SupplierItemUpdateDto, SupplierItemUpdate>();
+        
+        CreateMap<SupplierDashboardSummary, SupplierDashboardDto>();
+        CreateMap<SupplierPerformanceSnapshot, SupplierPerformanceDto>();
+        
+        CreateMap<PurchaseOrder, PurchaseOrderSummaryDto>()
+            .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.CustomerOrder.CustomerName))
+            .ForMember(dest => dest.TotalQuantity, opt => opt.MapFrom(src => src.TotalQuantity))
+            .ForMember(dest => dest.IsOverdue, opt => opt.MapFrom(src => src.IsOverdue))
+            .ForMember(dest => dest.DaysUntilDelivery, opt => opt.MapFrom(src => src.DaysUntilDelivery));
+
+        CreateMap<PurchaseOrder, PurchaseOrderDetailDto>()
+            .ForMember(dest => dest.CustomerOrderNumber, opt => opt.MapFrom(src => src.CustomerOrder.OrderNumber))
+            .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.CustomerOrder.CustomerName))
+            .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.CustomerOrder.CustomerId))
+            .ForMember(dest => dest.ProductType, opt => opt.MapFrom(src => src.CustomerOrder.ProductType))
+            .ForMember(dest => dest.IsOverdue, opt => opt.MapFrom(src => src.IsOverdue))
+            .ForMember(dest => dest.DaysUntilDelivery, opt => opt.MapFrom(src => src.DaysUntilDelivery));
+
+        CreateMap<PurchaseOrderItem, PurchaseOrderItemDetailDto>()
+            .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.TotalPrice));
+
+        CreateMap<SupplierOrderHistoryFilterDto, SupplierOrderHistoryFilter>();
+
+        CreateMap<DeliveryDateValidationResult, DeliveryDateValidationDto>();
+        CreateMap<DeliveryDateValidationError, ValidationErrorDto>();
+        CreateMap<DeliveryDateValidationWarning, ValidationWarningDto>();
     }
 }
