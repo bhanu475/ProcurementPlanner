@@ -13,6 +13,7 @@ import {
   setPagination,
   updateOrderStatusRealtime
 } from '../store/slices/ordersSlice';
+import { DistributionPlan } from '../types';
 import { CustomerOrder, OrderFilter, ProductType, OrderStatus } from '../types';
 import { signalRService } from '../services/signalr';
 import DashboardSummary from '../components/Dashboard/DashboardSummary';
@@ -60,7 +61,7 @@ const Dashboard: React.FC = () => {
     return () => {
       signalRService.stopConnection();
     };
-  }, [dispatch]);
+  }, [dispatch, filter, pagination.pageNumber, pagination.pageSize]);
 
   useEffect(() => {
     // Refetch orders when filter changes
@@ -88,7 +89,7 @@ const Dashboard: React.FC = () => {
     setShowDistributionPlanning(true);
   };
 
-  const handleCreatePurchaseOrders = async (distributionPlan: any) => {
+  const handleCreatePurchaseOrders = async (distributionPlan: DistributionPlan) => {
     if (selectedOrder) {
       await dispatch(createPurchaseOrders({
         customerOrderId: selectedOrder.id,
@@ -157,7 +158,7 @@ const Dashboard: React.FC = () => {
           <label className="text-sm font-medium text-gray-700">Group by:</label>
           <select
             value={groupBy}
-            onChange={(e) => setGroupBy(e.target.value as any)}
+            onChange={(e) => setGroupBy(e.target.value as 'productType' | 'deliveryDate' | 'status')}
             className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="productType">Product Type</option>

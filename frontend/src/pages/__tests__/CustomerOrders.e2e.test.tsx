@@ -20,7 +20,7 @@ vi.mock('../../services/customerApi', () => ({
   },
 }));
 
-const mockCustomerApiService = customerApiService as any;
+const mockCustomerApiService = customerApiService as jest.Mocked<typeof customerApiService>;
 
 const createMockStore = (initialState = {}) => {
   return configureStore({

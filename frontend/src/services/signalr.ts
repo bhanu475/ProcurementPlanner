@@ -1,4 +1,5 @@
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
+import { OrderCreatedEvent, PurchaseOrderCreatedEvent, DashboardUpdateEvent } from '../types';
 
 class SignalRService {
   private connection: HubConnection | null = null;
@@ -26,13 +27,13 @@ class SignalRService {
     }
   }
 
-  onOrderCreated(callback: (order: any) => void): void {
+  onOrderCreated(callback: (order: OrderCreatedEvent) => void): void {
     if (this.connection) {
       this.connection.on('OrderCreated', callback);
     }
   }
 
-  onPurchaseOrderCreated(callback: (purchaseOrder: any) => void): void {
+  onPurchaseOrderCreated(callback: (purchaseOrder: PurchaseOrderCreatedEvent) => void): void {
     if (this.connection) {
       this.connection.on('PurchaseOrderCreated', callback);
     }
@@ -44,7 +45,7 @@ class SignalRService {
     }
   }
 
-  onDashboardUpdate(callback: (summary: any) => void): void {
+  onDashboardUpdate(callback: (summary: DashboardUpdateEvent) => void): void {
     if (this.connection) {
       this.connection.on('DashboardUpdated', callback);
     }

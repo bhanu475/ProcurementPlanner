@@ -153,6 +153,40 @@ export interface PagedResult<T> {
   totalPages: number;
 }
 
+// Distribution Plan types
+export interface DistributionPlan {
+  customerOrderId: string;
+  allocations: DistributionAllocation[];
+}
+
+export interface DistributionAllocation {
+  supplierId: string;
+  allocatedQuantity: number;
+  items: DistributionItemAllocation[];
+}
+
+export interface DistributionItemAllocation {
+  orderItemId: string;
+  allocatedQuantity: number;
+}
+
+// SignalR callback types
+export interface OrderCreatedEvent extends CustomerOrder {}
+
+export interface PurchaseOrderCreatedEvent extends PurchaseOrder {}
+
+export interface DashboardUpdateEvent extends DashboardSummary {}
+
+// API Error type
+export interface ApiError {
+  message: string;
+  status?: number;
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
 // Legacy types for backward compatibility
 export interface Order extends CustomerOrder {}
-export interface OrderItem extends OrderItem {}

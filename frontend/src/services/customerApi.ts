@@ -1,5 +1,5 @@
 import apiClient from './api';
-import { CustomerOrder, OrderItem, PagedResult, OrderFilter } from '../types';
+import { CustomerOrder, PagedResult, OrderFilter } from '../types';
 
 export interface CreateOrderRequest {
   customerId: string;

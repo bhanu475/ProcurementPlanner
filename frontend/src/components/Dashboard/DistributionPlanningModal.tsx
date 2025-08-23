@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { CustomerOrder, DistributionSuggestion, SupplierAllocation } from '../../types';
+import { CustomerOrder, DistributionSuggestion, SupplierAllocation, DistributionPlan } from '../../types';
 
 interface DistributionPlanningModalProps {
   order: CustomerOrder;
   distributionSuggestion: DistributionSuggestion | null;
   loading: boolean;
   onClose: () => void;
-  onCreatePurchaseOrders: (distributionPlan: any) => void;
+  onCreatePurchaseOrders: (distributionPlan: DistributionPlan) => void;
 }
 
 const DistributionPlanningModal: React.FC<DistributionPlanningModalProps> = ({
@@ -79,7 +79,7 @@ const DistributionPlanningModal: React.FC<DistributionPlanningModalProps> = ({
   };
 
   const handleCreatePurchaseOrders = () => {
-    const distributionPlan = {
+    const distributionPlan: DistributionPlan = {
       customerOrderId: order.id,
       allocations: selectedAllocations.map(allocation => ({
         supplierId: allocation.supplierId,

@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { AxiosResponse } from 'axios';
 import PurchaseOrderModal from '../PurchaseOrderModal';
 import { supplierApi } from '../../../services/supplierApi';
 import { PurchaseOrder } from '../../../types';
@@ -12,9 +13,17 @@ vi.mock('../../../services/supplierApi', () => ({
   },
 }));
 
+const createMockResponse = <T,>(data: T): AxiosResponse<T> => ({
+  data,
+  status: 200,
+  statusText: 'OK',
+  headers: {},
+  config: {} as any,
+});
+
 // Mock the PackagingDeliveryForm component
 vi.mock('../PackagingDeliveryForm', () => ({
-  default: ({ onSubmit, onCancel, loading }: any) => (
+  default: ({ onSubmit, onCancel, loading }: { onSubmit: (data: Record<string, { packagingDetails: string; deliveryMethod: string; estimatedDeliveryDate: string }>) => void; onCancel: () => void; loading: boolean }) => (
     <div data-testid="packaging-form">
       <button onClick={() => onSubmit({ 'item-1': { packagingDetails: 'Box', deliveryMethod: 'Standard', estimatedDeliveryDate: '2024-01-20' } })}>
         Submit Packaging
@@ -133,9 +142,9 @@ describe('PurchaseOrderModal', () => {
 
   it('handles order confirmation successfully', async () => {
     const updatedOrder = { ...mockPurchaseOrder, status: 'Confirmed' as const };
-    vi.mocked(supplierApi.confirmPurchaseOrder).mockResolvedValue({
-      data: updatedOrder,
-    } as any);
+    vi.mocked(supplierApi.confirmPurchaseOrder).mockResolvedValue(
+      createMockResponse(updatedOrder)
+    );
 
     render(
       <PurchaseOrderModal

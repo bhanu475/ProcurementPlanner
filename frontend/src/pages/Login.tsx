@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { loginStart, loginSuccess, loginFailure } from '../store/slices/authSlice';
 import apiClient from '../services/api';
+import { ApiError } from '../types';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -36,9 +37,10 @@ const Login: React.FC = () => {
         default:
           navigate('/');
       }
-    } catch (error: any) {
+    } catch (error) {
+      const apiError = error as ApiError;
       dispatch(loginFailure());
-      setError(error.response?.data?.message || 'Login failed');
+      setError(apiError.response?.data?.message || 'Login failed');
     }
   };
 

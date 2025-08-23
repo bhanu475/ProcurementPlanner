@@ -1,9 +1,9 @@
-import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import SupplierDashboard from '../SupplierDashboard';
 import { supplierApi } from '../../../services/supplierApi';
 import { PurchaseOrder, SupplierPerformanceMetrics } from '../../../types';
+import { AxiosResponse } from 'axios';
 
 // Mock the supplier API
 vi.mock('../../../services/supplierApi', () => ({
@@ -60,6 +60,14 @@ const mockPerformanceMetrics: SupplierPerformanceMetrics = {
   lastUpdated: '2024-01-01',
 };
 
+const createMockResponse = <T,>(data: T): AxiosResponse<T> => ({
+  data,
+  status: 200,
+  statusText: 'OK',
+  headers: {},
+  config: {} as any,
+});
+
 describe('SupplierDashboard', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -75,12 +83,12 @@ describe('SupplierDashboard', () => {
   });
 
   it('renders dashboard data successfully', async () => {
-    vi.mocked(supplierApi.getPurchaseOrders).mockResolvedValue({
-      data: mockPurchaseOrders,
-    } as any);
-    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue({
-      data: mockPerformanceMetrics,
-    } as any);
+    vi.mocked(supplierApi.getPurchaseOrders).mockResolvedValue(
+      createMockResponse(mockPurchaseOrders)
+    );
+    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue(
+      createMockResponse(mockPerformanceMetrics)
+    );
 
     render(<SupplierDashboard supplierId="supplier-1" />);
 
@@ -97,12 +105,12 @@ describe('SupplierDashboard', () => {
   });
 
   it('displays purchase orders table', async () => {
-    vi.mocked(supplierApi.getPurchaseOrders).mockResolvedValue({
-      data: mockPurchaseOrders,
-    } as any);
-    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue({
-      data: mockPerformanceMetrics,
-    } as any);
+    vi.mocked(supplierApi.getPurchaseOrders).mockResolvedValue(
+      createMockResponse(mockPurchaseOrders)
+    );
+    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue(
+      createMockResponse(mockPerformanceMetrics)
+    );
 
     render(<SupplierDashboard supplierId="supplier-1" />);
 
@@ -126,12 +134,12 @@ describe('SupplierDashboard', () => {
   });
 
   it('displays empty state when no orders exist', async () => {
-    vi.mocked(supplierApi.getPurchaseOrders).mockResolvedValue({
-      data: [],
-    } as any);
-    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue({
-      data: mockPerformanceMetrics,
-    } as any);
+    vi.mocked(supplierApi.getPurchaseOrders).mockResolvedValue(
+      createMockResponse([])
+    );
+    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue(
+      createMockResponse(mockPerformanceMetrics)
+    );
 
     render(<SupplierDashboard supplierId="supplier-1" />);
 

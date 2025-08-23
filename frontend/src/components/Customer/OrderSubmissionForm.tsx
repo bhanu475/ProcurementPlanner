@@ -85,7 +85,7 @@ const OrderSubmissionForm: React.FC<OrderSubmissionFormProps> = ({ onSuccess, on
     }
   };
 
-  const handleInputChange = (field: keyof CreateOrderRequest, value: any) => {
+  const handleInputChange = (field: keyof CreateOrderRequest, value: string | CreateOrderItemRequest[]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {

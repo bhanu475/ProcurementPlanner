@@ -6,7 +6,8 @@ import {
   DashboardSummary, 
   OrderStatus,
   DistributionSuggestion,
-  PurchaseOrder
+  PurchaseOrder,
+  DistributionPlan
 } from '../../types';
 import apiClient from '../../services/api';
 
@@ -75,7 +76,7 @@ export const fetchDistributionSuggestion = createAsyncThunk(
 
 export const createPurchaseOrders = createAsyncThunk(
   'orders/createPurchaseOrders',
-  async (params: { customerOrderId: string; distributionPlan: any }) => {
+  async (params: { customerOrderId: string; distributionPlan: DistributionPlan }) => {
     const response = await apiClient.post('/procurement/distribute', params);
     return response.data as PurchaseOrder[];
   }

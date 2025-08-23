@@ -1,9 +1,9 @@
-import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import SupplierPerformanceMetricsComponent from '../SupplierPerformanceMetrics';
 import { supplierApi } from '../../../services/supplierApi';
 import { SupplierPerformanceMetrics } from '../../../types';
+import { AxiosResponse } from 'axios';
 
 // Mock the supplier API
 vi.mock('../../../services/supplierApi', () => ({
@@ -28,6 +28,14 @@ const mockPoorPerformanceMetrics: SupplierPerformanceMetrics = {
   lastUpdated: '2024-01-01T00:00:00Z',
 };
 
+const createMockResponse = <T,>(data: T): AxiosResponse<T> => ({
+  data,
+  status: 200,
+  statusText: 'OK',
+  headers: {},
+  config: {} as any,
+});
+
 describe('SupplierPerformanceMetricsComponent', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -42,9 +50,9 @@ describe('SupplierPerformanceMetricsComponent', () => {
   });
 
   it('renders performance metrics successfully', async () => {
-    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue({
-      data: mockPerformanceMetrics,
-    } as any);
+    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue(
+      createMockResponse(mockPerformanceMetrics)
+    );
 
     render(<SupplierPerformanceMetricsComponent supplierId="supplier-1" />);
 
@@ -59,9 +67,9 @@ describe('SupplierPerformanceMetricsComponent', () => {
   });
 
   it('displays excellent performance badges for high scores', async () => {
-    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue({
-      data: mockPerformanceMetrics,
-    } as any);
+    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue(
+      createMockResponse(mockPerformanceMetrics)
+    );
 
     render(<SupplierPerformanceMetricsComponent supplierId="supplier-1" />);
 
@@ -75,9 +83,9 @@ describe('SupplierPerformanceMetricsComponent', () => {
   });
 
   it('displays poor performance badges for low scores', async () => {
-    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue({
-      data: mockPoorPerformanceMetrics,
-    } as any);
+    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue(
+      createMockResponse(mockPoorPerformanceMetrics)
+    );
 
     render(<SupplierPerformanceMetricsComponent supplierId="supplier-2" />);
 
@@ -91,9 +99,9 @@ describe('SupplierPerformanceMetricsComponent', () => {
   });
 
   it('displays correct color coding for performance values', async () => {
-    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue({
-      data: mockPerformanceMetrics,
-    } as any);
+    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue(
+      createMockResponse(mockPerformanceMetrics)
+    );
 
     render(<SupplierPerformanceMetricsComponent supplierId="supplier-1" />);
 
@@ -107,9 +115,9 @@ describe('SupplierPerformanceMetricsComponent', () => {
   });
 
   it('displays performance insights for excellent performance', async () => {
-    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue({
-      data: mockPerformanceMetrics,
-    } as any);
+    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue(
+      createMockResponse(mockPerformanceMetrics)
+    );
 
     render(<SupplierPerformanceMetricsComponent supplierId="supplier-1" />);
 
@@ -122,9 +130,9 @@ describe('SupplierPerformanceMetricsComponent', () => {
   });
 
   it('displays performance insights for poor performance', async () => {
-    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue({
-      data: mockPoorPerformanceMetrics,
-    } as any);
+    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue(
+      createMockResponse(mockPoorPerformanceMetrics)
+    );
 
     render(<SupplierPerformanceMetricsComponent supplierId="supplier-2" />);
 
@@ -135,9 +143,9 @@ describe('SupplierPerformanceMetricsComponent', () => {
   });
 
   it('displays progress bars with correct widths', async () => {
-    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue({
-      data: mockPerformanceMetrics,
-    } as any);
+    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue(
+      createMockResponse(mockPerformanceMetrics)
+    );
 
     render(<SupplierPerformanceMetricsComponent supplierId="supplier-1" />);
 
@@ -164,9 +172,9 @@ describe('SupplierPerformanceMetricsComponent', () => {
   });
 
   it('displays no data message when performance data is null', async () => {
-    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue({
-      data: null,
-    } as any);
+    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue(
+      createMockResponse(null)
+    );
 
     render(<SupplierPerformanceMetricsComponent supplierId="supplier-1" />);
 
@@ -181,9 +189,9 @@ describe('SupplierPerformanceMetricsComponent', () => {
       totalOrdersCompleted: 75,
     };
 
-    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue({
-      data: establishedSupplier,
-    } as any);
+    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue(
+      createMockResponse(establishedSupplier)
+    );
 
     render(<SupplierPerformanceMetricsComponent supplierId="supplier-1" />);
 
@@ -198,9 +206,9 @@ describe('SupplierPerformanceMetricsComponent', () => {
       totalOrdersCompleted: 1500,
     };
 
-    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue({
-      data: highVolumeSupplier,
-    } as any);
+    vi.mocked(supplierApi.getPerformanceMetrics).mockResolvedValue(
+      createMockResponse(highVolumeSupplier)
+    );
 
     render(<SupplierPerformanceMetricsComponent supplierId="supplier-1" />);
 

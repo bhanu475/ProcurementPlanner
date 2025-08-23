@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { CustomerOrder, PagedResult, OrderFilter } from '../../types';
+import { CustomerOrder, PagedResult, OrderFilter, ApiError } from '../../types';
 import { customerApiService, CreateOrderRequest, OrderTrackingResponse } from '../../services/customerApi';
 
 interface CustomerOrdersState {
@@ -37,8 +37,9 @@ export const submitOrder = createAsyncThunk(
     try {
       const order = await customerApiService.submitOrder(orderData);
       return order;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to submit order');
+    } catch (error) {
+      const apiError = error as ApiError;
+      return rejectWithValue(apiError.response?.data?.message || 'Failed to submit order');
     }
   }
 );
@@ -52,8 +53,9 @@ export const fetchMyOrders = createAsyncThunk(
     try {
       const result = await customerApiService.getMyOrders(filter, pageNumber, pageSize);
       return result;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch orders');
+    } catch (error) {
+      const apiError = error as ApiError;
+      return rejectWithValue(apiError.response?.data?.message || 'Failed to fetch orders');
     }
   }
 );
@@ -64,8 +66,9 @@ export const fetchOrderTracking = createAsyncThunk(
     try {
       const tracking = await customerApiService.getOrderTracking(orderId);
       return tracking;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch order tracking');
+    } catch (error) {
+      const apiError = error as ApiError;
+      return rejectWithValue(apiError.response?.data?.message || 'Failed to fetch order tracking');
     }
   }
 );
@@ -76,8 +79,9 @@ export const fetchOrderById = createAsyncThunk(
     try {
       const order = await customerApiService.getOrderById(orderId);
       return order;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch order');
+    } catch (error) {
+      const apiError = error as ApiError;
+      return rejectWithValue(apiError.response?.data?.message || 'Failed to fetch order');
     }
   }
 );
@@ -89,7 +93,8 @@ export const cancelOrder = createAsyncThunk(
       await customerApiService.cancelOrder(orderId, reason);
       return orderId;
     } catch (error: unknown) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to cancel order');
+      const apiError = error as ApiError;
+      return rejectWithValue(apiError.response?.data?.message || 'Failed to cancel order');
     }
   }
 );
