@@ -26,6 +26,51 @@ class SignalRService {
     }
   }
 
+  onOrderCreated(callback: (order: any) => void): void {
+    if (this.connection) {
+      this.connection.on('OrderCreated', callback);
+    }
+  }
+
+  onPurchaseOrderCreated(callback: (purchaseOrder: any) => void): void {
+    if (this.connection) {
+      this.connection.on('PurchaseOrderCreated', callback);
+    }
+  }
+
+  onSupplierConfirmation(callback: (purchaseOrderId: string, status: string) => void): void {
+    if (this.connection) {
+      this.connection.on('SupplierConfirmation', callback);
+    }
+  }
+
+  onDashboardUpdate(callback: (summary: any) => void): void {
+    if (this.connection) {
+      this.connection.on('DashboardUpdated', callback);
+    }
+  }
+
+  // Join specific groups for targeted updates
+  async joinPlannerGroup(): Promise<void> {
+    if (this.connection) {
+      try {
+        await this.connection.invoke('JoinPlannerGroup');
+      } catch (error) {
+        console.error('Error joining planner group:', error);
+      }
+    }
+  }
+
+  async leavePlannerGroup(): Promise<void> {
+    if (this.connection) {
+      try {
+        await this.connection.invoke('LeavePlannerGroup');
+      } catch (error) {
+        console.error('Error leaving planner group:', error);
+      }
+    }
+  }
+
   async stopConnection(): Promise<void> {
     if (this.connection) {
       await this.connection.stop();
