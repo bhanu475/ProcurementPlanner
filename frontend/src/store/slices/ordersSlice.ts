@@ -11,7 +11,7 @@ import {
 } from '../../types';
 import apiClient from '../../services/api';
 
-interface OrdersState {
+export interface OrdersState {
   orders: CustomerOrder[];
   dashboardSummary: DashboardSummary | null;
   selectedOrder: CustomerOrder | null;

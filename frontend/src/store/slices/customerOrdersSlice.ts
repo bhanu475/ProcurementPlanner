@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { CustomerOrder, PagedResult, OrderFilter, ApiError } from '../../types';
 import { customerApiService, CreateOrderRequest, OrderTrackingResponse } from '../../services/customerApi';
 
-interface CustomerOrdersState {
+export interface CustomerOrdersState {
   orders: CustomerOrder[];
   currentOrder: CustomerOrder | null;
   orderTracking: OrderTrackingResponse | null;

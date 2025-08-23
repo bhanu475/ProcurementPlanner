@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Supplier } from '../../types';
 
-interface SuppliersState {
+export interface SuppliersState {
   suppliers: Supplier[];
   loading: boolean;
   error: string | null;
