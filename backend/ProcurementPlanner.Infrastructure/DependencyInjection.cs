@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
 using ProcurementPlanner.Core.Interfaces;
 using ProcurementPlanner.Infrastructure.Data;
 using ProcurementPlanner.Infrastructure.Repositories;
 using ProcurementPlanner.Infrastructure.Services;
+using StackExchange.Redis;
 
 namespace ProcurementPlanner.Infrastructure;
 
@@ -47,14 +49,30 @@ public static class DependencyInjection
         // Add health checks (database check will be added in future tasks)
         services.AddHealthChecks();
 
-        // Add in-memory caching for dashboard (Redis will be configured in future tasks)
+        // Add in-memory caching as fallback
         services.AddMemoryCache();
 
-        // Add Redis cache (will be configured in future tasks)
-        // services.AddStackExchangeRedisCache(options =>
-        // {
-        //     options.Configuration = configuration.GetConnectionString("Redis");
-        // });
+        // Add Redis cache
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = configuration.GetConnectionString("Redis");
+            options.InstanceName = "ProcurementPlanner";
+        });
+
+        // Add Redis connection multiplexer for direct Redis operations
+        services.AddSingleton<IConnectionMultiplexer>(provider =>
+        {
+            var connectionString = configuration.GetConnectionString("Redis") ?? "localhost:6379";
+            return ConnectionMultiplexer.Connect(connectionString);
+        });
+
+        // Add caching services
+        services.AddScoped<ICacheService, RedisCacheService>();
+        services.AddScoped<ISessionService, RedisSessionService>();
+
+        // Decorate services with caching
+        services.Decorate<IDashboardService, CachedDashboardService>();
+        services.Decorate<ISupplierManagementService, CachedSupplierManagementService>();
 
         return services;
     }

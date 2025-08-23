@@ -94,6 +94,9 @@ app.UseCors("AllowSpecificOrigins");
 // Use JWT Middleware
 app.UseMiddleware<ProcurementPlanner.API.Middleware.JwtMiddleware>();
 
+// Use Cache Invalidation Middleware
+app.UseMiddleware<ProcurementPlanner.API.Middleware.CacheInvalidationMiddleware>();
+
 // Use Authentication and Authorization
 app.UseAuthentication();
 app.UseAuthorization();

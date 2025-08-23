@@ -3,7 +3,7 @@ using ProcurementPlanner.Core.Entities;
 
 namespace ProcurementPlanner.Infrastructure.Data;
 
-public class ApplicationDbContext : DbContext
+public partial class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -28,6 +28,9 @@ public class ApplicationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        
+        // Configure performance indexes
+        ConfigurePerformanceIndexes(modelBuilder);
         
         // Configure User entity
         modelBuilder.Entity<User>(entity =>
