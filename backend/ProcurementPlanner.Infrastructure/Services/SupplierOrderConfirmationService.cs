@@ -436,7 +436,7 @@ public class SupplierOrderConfirmationService : ISupplierOrderConfirmationServic
                 Message = $"You have received a new purchase order {purchaseOrder.PurchaseOrderNumber} " +
                          $"for customer order {purchaseOrder.CustomerOrder.OrderNumber}. " +
                          $"Please review and confirm by {purchaseOrder.RequiredDeliveryDate:yyyy-MM-dd}.",
-                Type = NotificationType.NewPurchaseOrder
+                Type = SupplierNotificationType.NewPurchaseOrder
             };
 
             // In a real implementation, this would send email/SMS

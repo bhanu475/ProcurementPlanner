@@ -18,6 +18,12 @@ public class ApplicationDbContext : DbContext
     public DbSet<SupplierPerformanceMetrics> SupplierPerformanceMetrics { get; set; }
     public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
     public DbSet<PurchaseOrderItem> PurchaseOrderItems { get; set; }
+    public DbSet<OrderStatusHistory> OrderStatusHistories { get; set; }
+    public DbSet<OrderMilestone> OrderMilestones { get; set; }
+    public DbSet<NotificationTemplate> NotificationTemplates { get; set; }
+    public DbSet<NotificationLog> NotificationLogs { get; set; }
+    public DbSet<CustomerNotificationPreferences> CustomerNotificationPreferences { get; set; }
+    public DbSet<AuditLog> AuditLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -144,6 +150,93 @@ public class ApplicationDbContext : DbContext
                   .WithMany()
                   .HasForeignKey(e => e.OrderItemId)
                   .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // Configure OrderStatusHistory entity
+        modelBuilder.Entity<OrderStatusHistory>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.OrderId);
+            entity.HasIndex(e => e.ChangedAt);
+            entity.HasIndex(e => e.ChangedBy);
+            entity.Property(e => e.FromStatus).HasConversion<string>();
+            entity.Property(e => e.ToStatus).HasConversion<string>();
+            entity.HasOne(e => e.Order)
+                  .WithMany()
+                  .HasForeignKey(e => e.OrderId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.ChangedByUser)
+                  .WithMany()
+                  .HasForeignKey(e => e.ChangedBy)
+                  .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        // Configure OrderMilestone entity
+        modelBuilder.Entity<OrderMilestone>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.OrderId);
+            entity.HasIndex(e => e.TargetDate);
+            entity.HasIndex(e => e.Status);
+            entity.Property(e => e.Status).HasConversion<string>();
+            entity.HasOne(e => e.Order)
+                  .WithMany()
+                  .HasForeignKey(e => e.OrderId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Configure NotificationTemplate entity
+        modelBuilder.Entity<NotificationTemplate>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Name).IsUnique();
+            entity.HasIndex(e => e.Type);
+            entity.HasIndex(e => e.IsActive);
+            entity.Property(e => e.Type).HasConversion<string>();
+            entity.Ignore(e => e.RequiredParameters);
+        });
+
+        // Configure NotificationLog entity
+        modelBuilder.Entity<NotificationLog>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Type);
+            entity.HasIndex(e => e.Status);
+            entity.HasIndex(e => e.Priority);
+            entity.HasIndex(e => e.CreatedAt);
+            entity.HasIndex(e => e.Recipient);
+            entity.Property(e => e.Type).HasConversion<string>();
+            entity.Property(e => e.Status).HasConversion<string>();
+            entity.Property(e => e.Priority).HasConversion<string>();
+            entity.Ignore(e => e.Metadata);
+        });
+
+        // Configure CustomerNotificationPreferences entity
+        modelBuilder.Entity<CustomerNotificationPreferences>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.CustomerId).IsUnique();
+        });
+
+        // Configure AuditLog entity
+        modelBuilder.Entity<AuditLog>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Action);
+            entity.HasIndex(e => e.EntityType);
+            entity.HasIndex(e => e.EntityId);
+            entity.HasIndex(e => e.UserId);
+            entity.HasIndex(e => e.Username);
+            entity.HasIndex(e => e.UserRole);
+            entity.HasIndex(e => e.Result);
+            entity.HasIndex(e => e.Timestamp);
+            entity.HasIndex(e => new { e.EntityType, e.EntityId });
+            entity.HasIndex(e => new { e.UserId, e.Timestamp });
+            entity.Property(e => e.Result).HasConversion<string>();
+            entity.HasOne(e => e.User)
+                  .WithMany()
+                  .HasForeignKey(e => e.UserId)
+                  .OnDelete(DeleteBehavior.SetNull);
         });
     }
 

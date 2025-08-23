@@ -150,5 +150,56 @@ public class MappingProfile : Profile
         CreateMap<DeliveryDateValidationResult, DeliveryDateValidationDto>();
         CreateMap<DeliveryDateValidationError, ValidationErrorDto>();
         CreateMap<DeliveryDateValidationWarning, ValidationWarningDto>();
+
+        // Customer Order Tracking Mappings
+        CreateMap<OrderTrackingFilterDto, Core.Interfaces.OrderTrackingFilter>();
+        
+        CreateMap<CustomerOrder, OrderTrackingDto>()
+            .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.LastStatusUpdate, opt => opt.MapFrom(src => src.UpdatedAt ?? src.CreatedAt))
+            .ForMember(dest => dest.IsAtRisk, opt => opt.MapFrom(src => src.IsOverdue))
+            .ForMember(dest => dest.RiskReason, opt => opt.MapFrom(src => src.IsOverdue ? "Order is overdue" : null))
+            .ForMember(dest => dest.DaysUntilDelivery, opt => opt.MapFrom(src => (src.RequestedDeliveryDate - DateTime.UtcNow.Date).Days))
+            .ForMember(dest => dest.CompletionPercentage, opt => opt.MapFrom(src => CalculateCompletionPercentage(src.Status)))
+            .ForMember(dest => dest.StatusHistory, opt => opt.Ignore()) // Will be populated separately
+            .ForMember(dest => dest.Milestones, opt => opt.Ignore()); // Will be populated separately
+
+        CreateMap<CustomerOrder, CustomerOrderSummaryDto>()
+            .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+            .ForMember(dest => dest.ItemCount, opt => opt.MapFrom(src => src.Items.Count))
+            .ForMember(dest => dest.TotalValue, opt => opt.MapFrom(src => src.Items.Sum(i => i.TotalPrice)))
+            .ForMember(dest => dest.IsAtRisk, opt => opt.MapFrom(src => src.IsOverdue));
+
+        CreateMap<OrderStatusHistory, OrderStatusHistoryDto>()
+            .ForMember(dest => dest.ChangedByUser, opt => opt.MapFrom(src => src.ChangedByUser != null ? src.ChangedByUser.Username : null));
+
+        CreateMap<OrderMilestone, OrderMilestoneDto>()
+            .ForMember(dest => dest.IsOverdue, opt => opt.MapFrom(src => src.TargetDate.HasValue && src.ActualDate == null && src.TargetDate.Value < DateTime.UtcNow))
+            .ForMember(dest => dest.DaysUntilTarget, opt => opt.MapFrom(src => src.TargetDate.HasValue ? (src.TargetDate.Value - DateTime.UtcNow.Date).Days : 0));
+
+        CreateMap<Core.Interfaces.CustomerNotificationPreferences, CustomerNotificationPreferencesDto>()
+            .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.CustomerId));
+
+        CreateMap<UpdateNotificationPreferencesRequest, Core.Interfaces.UpdateCustomerNotificationPreferencesRequest>();
+
+        CreateMap<Core.Interfaces.OrderTrackingSummary, CustomerOrderTrackingSummaryDto>();
+    }
+
+    private static decimal CalculateCompletionPercentage(OrderStatus status)
+    {
+        return status switch
+        {
+            OrderStatus.Submitted => 10m,
+            OrderStatus.UnderReview => 20m,
+            OrderStatus.PlanningInProgress => 30m,
+            OrderStatus.PurchaseOrdersCreated => 40m,
+            OrderStatus.AwaitingSupplierConfirmation => 50m,
+            OrderStatus.InProduction => 70m,
+            OrderStatus.ReadyForDelivery => 90m,
+            OrderStatus.Delivered => 100m,
+            OrderStatus.Cancelled => 0m,
+            _ => 0m
+        };
     }
 }

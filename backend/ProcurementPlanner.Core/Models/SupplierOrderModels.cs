@@ -128,7 +128,7 @@ public class SupplierNotification
     public Guid PurchaseOrderId { get; set; }
     public string Subject { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;
-    public NotificationType Type { get; set; }
+    public SupplierNotificationType Type { get; set; }
     public NotificationStatus Status { get; set; } = NotificationStatus.Pending;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? SentAt { get; set; }
@@ -137,26 +137,15 @@ public class SupplierNotification
 }
 
 /// <summary>
-/// Types of notifications
+/// Types of supplier notifications
 /// </summary>
-public enum NotificationType
+public enum SupplierNotificationType
 {
     NewPurchaseOrder,
     OrderCancelled,
     OrderModified,
     DeliveryReminder,
     OverdueOrder
-}
-
-/// <summary>
-/// Notification status
-/// </summary>
-public enum NotificationStatus
-{
-    Pending,
-    Sent,
-    Failed,
-    Cancelled
 }
 
 /// <summary>

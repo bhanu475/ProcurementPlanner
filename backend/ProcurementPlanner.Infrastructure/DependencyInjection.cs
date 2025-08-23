@@ -38,6 +38,11 @@ public static class DependencyInjection
         services.AddScoped<IDistributionAlgorithmService, DistributionAlgorithmService>();
         services.AddScoped<IProcurementPlanningService, ProcurementPlanningService>();
         services.AddScoped<ISupplierOrderConfirmationService, SupplierOrderConfirmationService>();
+        services.AddScoped<IOrderStatusTrackingService, OrderStatusTrackingService>();
+        services.AddScoped<ICustomerOrderTrackingService, CustomerOrderTrackingService>();
+        services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<IAuditService, AuditService>();
+        services.AddScoped<IReportingService, ReportingService>();
 
         // Add health checks (database check will be added in future tasks)
         services.AddHealthChecks();
